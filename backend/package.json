@@ -1,0 +1,31 @@
+{
+  "name": "bluethink-survey-backend",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "axios": "^0.20.0",
+    "bluemix-appid": "^3.0.6",
+    "cfenv": "^1.2.2",
+    "cookie-parser": "^1.4.4",
+    "cors": "^2.8.5",
+    "debug": "~2.6.9",
+    "express": "^4.17.1",
+    "express-enforces-ssl": "^1.1.0",
+    "express-session": "^1.17.1",
+    "helmet": "^3.20.0",
+    "ibm_db": "2.6.3",
+    "ibmcloud-appid": "^6.1.0",
+    "lodash": "^4.17.15",
+    "memorystore": "^1.6.4",
+    "moment": "^2.27.0",
+    "moment-timezone": "^0.5.31",
+    "morgan": "~1.9.1",
+    "nconf": "^0.10.0",
+    "nodemailer": "^6.4.11",
+    "passport": "^0.4.0",
+    "request-promise": "^4.2.4"
+  }
+}

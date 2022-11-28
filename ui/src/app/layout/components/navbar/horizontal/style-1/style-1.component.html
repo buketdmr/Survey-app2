@@ -1,0 +1,11 @@
+<div [ngClass]="fuseConfig.layout.navbar.primaryBackground">
+    <div fxFlex fxFill fxLayout="row" fxLayoutAlign="start center">
+        <button *ngIf="surveyGuid" mat-button
+                (click)="homeClick()"
+                aria-label="Home">
+            <mat-icon class="secondary-text">home</mat-icon>
+            Home
+        </button>
+
+    </div>
+</div>

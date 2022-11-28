@@ -1,0 +1,50 @@
+<div id="main">
+    <!-- NAVBAR: Top -->
+    <ng-container>
+        <ng-container *ngTemplateOutlet="topNavbar"></ng-container>
+    </ng-container>
+
+    <div id="container-1" class="container">
+
+        <div id="container-2" class="container">
+            <div id="container-3"
+                 class="container"
+                 fusePerfectScrollbar
+                 [fusePerfectScrollbarOptions]="{
+                    suppressScrollX: true,
+                    updateOnRouteChange: true
+                }">
+                <!-- CONTENT -->
+                <content style="overflow-x: hidden;"></content>
+                <!-- / CONTENT -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- FOOTER: Above -->
+    <ng-container>
+        <ng-container *ngTemplateOutlet="footer"></ng-container>
+    </ng-container>
+    <!-- FOOTER: Above -->
+</div>
+
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- @ PARTIALS                                                                                            -->
+<!-- ----------------------------------------------------------------------------------------------------- -->
+<!-- FOOTER -->
+<ng-template #footer>
+    <footer [ngClass]="
+            fuseConfig.layout.footer.customBackgroundColor === true
+                ? fuseConfig.layout.footer.position +
+                  ' ' +
+                  fuseConfig.layout.footer.background
+                : fuseConfig.layout.footer.position
+        "></footer>
+</ng-template>
+<!-- / FOOTER -->
+<!-- TOP NAVBAR -->
+<ng-template #topNavbar>
+    <navbar variant="horizontal-style-1" class="top-navbar" fxHide fxShow.gt-sm>
+    </navbar>
+</ng-template>
+<!-- / TOP NAVBAR -->

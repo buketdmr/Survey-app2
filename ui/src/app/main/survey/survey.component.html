@@ -1,0 +1,189 @@
+<div style="margin: 5px; width: 98%">
+    <div class="content p-24" fxLayout="row" *ngIf="showSurvey">
+
+                <div class="mat-card h-100-p w-100-p">
+                    <div class="test-stepper"
+                         fxLayout="row"
+                         fxFlex="1 0 auto"
+                         style="display: block; justify-content: space-between">
+                        <mat-horizontal-stepper *ngIf="selectedSection"
+                                                [linear]="true"
+                                                #stepper
+                                                style="width: 90%"
+                                                labelPosition="bottom"
+                                                (selectionChange)="setIndex($event.selectedIndex, false)">
+                            <mat-step *ngFor="let section of sections"
+                                      [completed]="completed[sections.indexOf(section)]"
+                                      state="check">
+                                <ng-template matStepLabel>
+                                    <div [style]="getColor(section)">{{ section.label }}</div>
+                                </ng-template>
+                                <div class="m-20">
+                                    {{ section?.name }}
+                                </div>
+                                <div class="m-20">
+                                    {{ section?.desc }}
+                                </div>
+                                <div fxLayout="row" class="m-20">
+                                    <div *ngFor="let set of questionSets"
+                                         fxLayout="row"
+                                         fxFlex="1 0 auto"
+                                         style="display: flex; justify-content: space-between">
+                                        <ng-container *ngTemplateOutlet="
+                                                questionTemplate;
+                                                context: { id: set[0], question: getQuestion(set[0]) }
+                                            "></ng-container>
+                                        <ng-container *ngTemplateOutlet="
+                                                questionTemplate;
+                                                context: { id: set[1], question: getQuestion(set[1]) }
+                                            "></ng-container>
+                                    </div>
+                                </div>
+                                <div fxLayout="row" class="form-buttons">
+                                    <button matStepperPrevious
+                                            mat-flat-button
+                                            style="margin: 10px"
+                                            *ngIf="isEditable">
+                                        Previous
+                                    </button>
+                                    &nbsp;
+                                    <button matStepperNext
+                                            mat-flat-button
+                                            style="margin: 10px"
+                                            color="accent"
+                                            *ngIf="isEditable"
+                                            [disabled]="!completed[sections.indexOf(section)]"
+                                            (click)="saveLastSection(false)">
+                                        {{
+                                            sections.indexOf(section) === sections.length - 1
+                                                ? 'Save'
+                                                : 'Save & Continue'
+                                        }}
+                                    </button>
+                                    &nbsp;
+                                    <button mat-flat-button
+                                            style="margin: 10px"
+                                            color="accent"
+                                            *ngIf="
+                                            isEditable &&
+                                            selectedSection.id === sections[sections.length - 1].id
+                                        "
+                                            [disabled]="!completed[sections.indexOf(section)]"
+                                            (click)="saveLastSection(true)">
+                                        Save & Submit
+                                    </button>
+                                </div>
+                            </mat-step>
+                            <ng-template matStepperIcon="check">
+                                <mat-icon>fiber_manual_record</mat-icon>
+                            </ng-template>
+                        </mat-horizontal-stepper>
+                    </div>
+                </div>
+
+    </div>
+
+    <div class="content p-24" fxLayout="row" *ngIf="showNotFound">
+        404 - Not found
+    </div>
+</div>
+<ng-template #questionTemplate let-id="id" let-question="question">
+    <ng-container *ngIf="id !== null && question !== null">
+        <mat-form-field fxFlex="50"
+                        style="width: 47.5%"
+                        *ngIf="
+                question.questionType !== 'OPTIONS' &&
+                question.questionType !== 'BOOLEAN' &&
+                question.questionType !== 'IMAGE' &&
+                question.questionType !== 'DECIMAL' &&
+                question.satisfied &&
+                question.code !== 'SPACE'
+            ">
+            <mat-label>{{ question.questionText }}</mat-label>
+            <input matInput
+                   style="min-width: 100% !important"
+                   #input
+                   [required]="question.mandatory"
+                   [readonly]="!isEditable"
+                   [placeholder]="question.questionText"
+                   [(ngModel)]="answers[question.id][0].value"
+                   (keyup)="change(question, $event.target.value)" />
+        </mat-form-field>
+        <mat-form-field fxFlex="50"
+                        style="width: 47.5%"
+                        *ngIf="question.questionType === 'DECIMAL' && question.satisfied">
+            <mat-label>{{ question.questionText }}</mat-label>
+            <input matInput
+                   type="number"
+                   style="min-width: 100% !important"
+                   #input
+                   [required]="question.mandatory"
+                   [readonly]="!isEditable"
+                   [placeholder]="question.questionText"
+                   [(ngModel)]="answers[question.id][0].value"
+                   (keyup)="change(question, $event.target.value)" />
+        </mat-form-field>
+        <div *ngIf="question.questionType === 'BOOLEAN' && question.satisfied"
+             style="width: 47.5%; margin-top: 20px; margin-bottom: 20px"
+             layout="row">
+            <mat-label fxLayoutAlign="start center">{{ question.questionText }} <span *ngIf="question.mandatory">*</span></mat-label>
+            &nbsp;
+            <mat-button-toggle-group fxLayoutAlign="end center"
+                                     [(ngModel)]="answers[question.id][0].value"
+                                     (change)="change(question, $event.value)"
+                                     [required]="question.mandatory"
+                                     [readonly]="!isEditable">
+                <mat-button-toggle value="1" [disabled]="!isEditable">Yes</mat-button-toggle>
+                <mat-button-toggle value="0" [disabled]="!isEditable">No</mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+        <mat-form-field style="width: 47.5%" *ngIf="question.questionType === 'OPTIONS' && question.satisfied">
+            <mat-label>{{ question.questionText }}</mat-label>
+            <input *ngIf="!isEditable"
+                   matInput
+                   style="min-width: 100% !important"
+                   #input
+                   [required]="question.mandatory"
+                   [readonly]="!isEditable"
+                   [placeholder]="question.questionText"
+                   [(ngModel)]="answers[question.id][0].value" />
+            <mat-select *ngIf="isEditable"
+                        (selectionChange)="change(question, $event.value)"
+                        [(ngModel)]="answers[question.id][0].value"
+                        [required]="question.mandatory">
+                <mat-option *ngFor="let opt of answerOptions[question.id]" [value]="opt.value">
+                    {{
+                    opt.value
+                    }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <div style="width: 47.5%; height: 100px" *ngIf="question.questionType === 'IMAGE' && question.satisfied">
+            <mat-label style="margin-top: 20px; margin-left: 0px; position: absolute; width: 100%">
+                {{
+                question.questionText
+                }}
+            </mat-label>
+            <label class="fileContainer" style="margin-top: 40px; position: absolute">
+                <mat-icon style="
+                        display: inline !important;
+                        font-size: 35px;
+                        border: solid 1px rgba(255, 255, 255, 0.12);
+                        border-radius: 20%;
+                    ">insert_photo</mat-icon>
+                <input type="file"
+                       accept="image/*"
+                       (change)="fileChange($event, question.id)"
+                       [attr.data-id]="question.id"
+                       style="position: absolute; margin-top: 20px"
+                       [required]="question.mandatory"
+                       [readonly]="!isEditable" />
+            </label>
+            <img [src]="getImage(answers[question.id][0].value)"
+                 *ngIf="answers[question.id][0].value"
+                 (click)="openDialog(getImage(answers[question.id][0].value))"
+                 style="height: 35px; width: 35px; margin-top: 45px; margin-left: 60px" />
+        </div>
+        <!-- <hr *ngIf="question.hasEndDivider && question.satisfied" style="width:100%; margin-bottom:20px;" /> -->
+    </ng-container>
+</ng-template>

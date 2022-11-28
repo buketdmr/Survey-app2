@@ -1,0 +1,27 @@
+@mixin toolbar-theme($theme) {
+
+    $foreground: map-get($theme, foreground);
+
+    toolbar {
+
+        .toolbar-separator {
+            background: map-get($foreground, divider);
+        }
+    }
+}
+
+.selected-sites-title {
+    font: 400 56px/56px Muli, Helvetica Neue, Arial, sans-serif;
+    font-style: normal;
+    font-variant-ligatures: normal;
+    font-variant-caps: normal;
+    font-variant-numeric: normal;
+    font-variant-east-asian: normal;
+    font-weight: 400;
+    font-stretch: normal;
+    font-size: 56px;
+    line-height: 56px;
+    font-family: Muli, "Helvetica Neue", Arial, sans-serif;
+    letter-spacing: -0.02em;
+    padding-left: 10px;
+}

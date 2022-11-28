@@ -1,0 +1,35 @@
+table {
+    width: 100%;
+}
+
+.centered-table {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+mat-paginator {
+    margin-left: 20px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.mat-row:hover > td {
+    background-color: #ccc;
+    color: #000;
+    font-style: bold;
+    cursor: grab;
+}
+
+.breadcrumb {
+    font-size: small;
+    font-weight: bold;
+    padding: 10px;
+}
+
+.breadcrumb > a {
+    color: white;
+    text-decoration: underline;
+}
